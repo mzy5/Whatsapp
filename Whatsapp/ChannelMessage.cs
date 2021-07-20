@@ -8,10 +8,10 @@ namespace Whatsapp
     {
         public ChannelMessage(string body, string sender, string channel) : base(body, sender)
         {
-            ChannelPropr = sender;
+            Channel = channel;
         }
 
-        public string ChannelPropr
+        public string Channel
         {
             get;
             private set;

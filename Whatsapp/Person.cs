@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Whatsapp
@@ -8,18 +9,19 @@ namespace Whatsapp
     {
         public string Name { get; set; }
 
-        private List<Channel> _myChannel = new List<Channel>();
-        private List<Person> _myFriends = new List<Person>();
+        private List<Channel> _myChannels;
+        private List<Person> _myFriends;
 
         public Person()
         {
-            //???
+            _myChannels = new List<Channel>();
+            _myFriends = new List<Person>();
         }
 
         public void RegisterChannel(Channel channel)
         {
-            _myChannel.Add(channel);
-            //Besides this, the method should also call the Register method of the channel passing the current person as an argument to it: channel.Register(this);
+            _myChannels.Add(channel);
+            channel.Register(this);
         }
 
         public void AddFriend(Person person)
@@ -29,25 +31,45 @@ namespace Whatsapp
 
         public void ReceiveMessage(RegularMessage regularMessage)
         {
-            if (regularMessage != null)
-            {
-                Console.WriteLine("The message sent by???is???");
-            }
+            Console.WriteLine($"{regularMessage.Sender}: {regularMessage.Body}");
         }
 
         public void SendMessageToFriend(string message, string friendName)
         {
-            foreach (var item in _myFriends)
+            bool foundBulb = false;
+
+            foreach (var friend in _myFriends)
             {
-                //if(item???
+               if(friend.Name == friendName)
+                {
+                    foundBulb = true;
+                    RegularMessage regularMessage = new RegularMessage(message, Name);
+                    friend.ReceiveMessage(regularMessage);
+                }
             }
+
+            if(!foundBulb)
+            {
+                Console.WriteLine($"Cannot send message! The person {friendName} is not a friend.");
+            }
+        }
+
+        public void ReceiveChannelMessage(ChannelMessage channelMessage)
+        {
+            Console.WriteLine($"The message received from {channelMessage.Sender} through the channel {channelMessage.Channel} is: {channelMessage.Body}");
         }
 
         public void SendMessageToChannel(string message, string channelName)
         {
-            foreach (var item in _myChannel)
+            var channel = _myChannels.Where(ch => ch.Name == channelName).FirstOrDefault();
+            if (channel != null)
             {
-
+                RegularMessage regularMessage = new RegularMessage(message, Name);
+                channel.ReceiveMessage(regularMessage);
+            }
+            else
+            {
+                Console.WriteLine($"Cannot send message! You are not registered to the channel {channel}.");
             }
         }
     }

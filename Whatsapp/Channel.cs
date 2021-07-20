@@ -7,12 +7,13 @@ namespace Whatsapp
     public class Channel : IMessageReceiver
     {
         public string Name { get; set; }
-        public List<Person> Members = new List<Person>();
-        public List<RegularMessage> Messages = new List<RegularMessage>();
+        public List<Person> Members;
+        public List<RegularMessage> Messages;
 
         public Channel()
         {
-            //initialize lists
+            Members = new List<Person>();
+            Messages = new List<RegularMessage>();
         }
 
         public void Register(Person person)
@@ -23,14 +24,18 @@ namespace Whatsapp
         public void ReceiveMessage(RegularMessage regularMessage)
         {
             Messages.Add(regularMessage);
-            void NotifyMembers()
-            {
-                foreach (var item in Members)
-                {
-                    if ()
-                    {
+            NotifyMembers(regularMessage);
+        }
 
-                    }
+        private void NotifyMembers(RegularMessage messagePostedByAMember)
+        {
+            foreach (var person in Members)
+            {
+                ChannelMessage channelMessage = new ChannelMessage(messagePostedByAMember.Body, messagePostedByAMember.Sender, Name);
+
+                if (person.Name != messagePostedByAMember.Sender)
+                {
+                    person.ReceiveChannelMessage(channelMessage);
                 }
             }
         }

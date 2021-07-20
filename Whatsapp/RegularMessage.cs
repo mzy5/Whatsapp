@@ -12,12 +12,11 @@ namespace Whatsapp
             _sender = sender;
             Body = body;
         }
-        //???
+        
         public string Body { get; private set; }
         public string Sender
         {
             get { return _sender; }
-            //set {  }
         }
     }
 }
